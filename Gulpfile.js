@@ -6,12 +6,14 @@ var gulp = require('gulp'),
   coffee = require('gulp-coffee'),
   deploy = require('gulp-gh-pages'),
   haml = require('gulp-ruby-haml'),
+  slim = require('gulp-slim')
   include = require('gulp-include'),
   neat = require('node-neat').includePaths,
   sass = require('gulp-ruby-sass'),
   sourcemaps = require('gulp-sourcemaps');
 
 var paths = {
+  slim: './source/views/*.slim',
   haml: './source/views/*.haml',
   coffee: './source/assets/javascripts/**/*.coffee',
   scss: './source/assets/stylesheets/**/*.scss',
@@ -25,6 +27,17 @@ gulp.task('views', function () {
     .pipe(haml())
     .pipe(gulp.dest('./build'));
 });
+
+// Slim templates
+gulp.task('slim', function () {
+  gulp.src(paths.slim)
+  .pipe(slim( {
+    pretty: true,
+    require: 'slim/include',
+    options: 'include_dirs=[".", "common/includes", "./includes","./source/views/partials"]'
+  }))
+  .pipe(gulp.dest('./build'));
+})
 
 // Scss stylesheets
 gulp.task('stylesheets', function() {
@@ -76,6 +89,7 @@ gulp.task('server', function() {
 
 gulp.task('watch', function() {
   gulp.watch(paths.haml, ['views']);
+  gulp.watch(paths.slim, ['slim']);
   gulp.watch(paths.scss, ['stylesheets']);
   gulp.watch(paths.coffee, ['javascripts']);
   gulp.watch(paths.images, ['images']);
