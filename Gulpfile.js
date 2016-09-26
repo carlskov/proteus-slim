@@ -13,9 +13,10 @@ var gulp = require('gulp'),
   sourcemaps = require('gulp-sourcemaps');
 
 var paths = {
-  slim: './source/views/*.slim',
-  haml: './source/views/*.haml',
+  slim: './source/views/**/*.slim',
+  haml: './source/views/**/*.haml',
   coffee: './source/assets/javascripts/**/*.coffee',
+  javascript: './source/assets/javascripts/**/*.js',
   scss: './source/assets/stylesheets/**/*.scss',
   images: './source/assets/images/*',
   fonts: './source/assets/fonts/*'
@@ -52,11 +53,15 @@ gulp.task('stylesheets', function() {
 
 // Coffeescript
 gulp.task('javascripts', function() {
-  return gulp.src(paths.coffee)
-    .pipe(sourcemaps.init())
-    .pipe(include())
-    .pipe(coffee())
-    .pipe(sourcemaps.write())
+  // return gulp.src(paths.coffee)
+  //   .pipe(sourcemaps.init())
+  //   .pipe(include())
+  //   .pipe(coffee())
+  //   .pipe(sourcemaps.write())
+  //   .pipe(gulp.dest('./build/assets/javascripts'));
+
+  return gulp.src(paths.javascript)
+    .pipe(concat("application.js"))
     .pipe(gulp.dest('./build/assets/javascripts'));
 });
 
@@ -92,6 +97,7 @@ gulp.task('watch', function() {
   gulp.watch(paths.slim, ['slim']);
   gulp.watch(paths.scss, ['stylesheets']);
   gulp.watch(paths.coffee, ['javascripts']);
+  gulp.watch(paths.javascript, ['javascripts']);
   gulp.watch(paths.images, ['images']);
   gulp.watch(paths.fonts, ['fonts']);
   gulp.watch('./build/*.html', browsersync.reload);
